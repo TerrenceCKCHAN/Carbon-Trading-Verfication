@@ -13,7 +13,7 @@ class EmadiNINet(nn.Module):
         super(EmadiNINet, self).__init__()
         dropout_value = 0.2
         self.layers = nn.Sequential(
-            nn.Linear(13, 50),
+            nn.Linear(4, 50),
             nn.Dropout(dropout_value),
             nn.ReLU(),
             nn.Linear(50, 50),

@@ -13,7 +13,7 @@ def check_rmse(model, test_loader, device):
             y = y.to(device=device)
             z = model(x)
             sum_rmse += ((z - y)**2)
-        return sum_rmse / num_samples
+        return torch.sqrt(sum_rmse / num_samples)
 
 def check_mae(model, test_loader, device):
     num_samples = 0
