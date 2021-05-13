@@ -15,6 +15,19 @@ def check_rmse(model, test_loader, device):
             sum_rmse += ((z - y)**2)
         return torch.sqrt(sum_rmse / num_samples)
 
+def check_rmspe(model, test_loader, device):
+    num_samples = 0
+    sum_rmse = 0
+    model.eval()
+    with torch.no_grad():
+        for x, y in test_loader:
+            num_samples += 1
+            x = x.to(device=device)
+            y = y.to(device=device)
+            z = model(x)
+            sum_rmse += (((z - y) / y)**2)
+        return torch.sqrt(sum_rmse / num_samples)
+
 def check_mae(model, test_loader, device):
     num_samples = 0
     sum_mae = 0
@@ -26,6 +39,19 @@ def check_mae(model, test_loader, device):
             y = y.to(device=device)
             z = model(x)
             sum_mae += torch.abs(z - y)
+        return sum_mae / num_samples
+
+def check_mape(model, test_loader, device):
+    num_samples = 0
+    sum_mae = 0
+    model.eval()
+    with torch.no_grad():
+        for x, y in test_loader:
+            num_samples += 1
+            x = x.to(device=device)
+            y = y.to(device=device)
+            z = model(x)
+            sum_mae += torch.abs((z - y) / y)
         return sum_mae / num_samples
 
 def check_r2(model, test_loader, device):
@@ -45,6 +71,6 @@ def check_r2(model, test_loader, device):
             x = x.to(device=device)
             y = y.to(device=device)
             z = model(x)
-            sum_num += ((z - y) ** 2)
+            sum_num += ((z - avg_y) ** 2)
             sum_denom += ((y - avg_y) ** 2)
         return sum_num / sum_denom

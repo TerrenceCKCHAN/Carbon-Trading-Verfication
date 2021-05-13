@@ -37,23 +37,23 @@ def add_indices_columns(data_df):
 
 csv_file_path = "E:\School\Imperial\individual_project\individual_project\data\lucas_sentinel2_data_points_zhou2020.csv"
 lr = 0.0005
-epochs = 1000
+epochs = 100
 data_df = load_csv_to_pd(csv_file_path)
 data_df = add_indices_columns(data_df)
 
 # Split into train and test sets (90/10)
-msk = np.random.rand(len(data_df)) < 1
+msk = np.random.rand(len(data_df)) < 1.0
 train_df = data_df[msk]
 test_df = data_df[~msk]
 
 
 train_labels_tensor = torch.tensor(train_df['OC'].values.astype(np.float32))
-train_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude','BAND_12','BAND_3','BAND_4','BAND_5','BAND_6','BAND_8','BAND_8A','SATVI','EVI'], axis = 1).values.astype(np.float32)) 
+train_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude'], axis = 1).values.astype(np.float32)) 
 train_tensor = TensorDataset(train_data_tensor, train_labels_tensor) 
 train_loader = DataLoader(dataset=train_tensor, batch_size=1, shuffle=True)
 
 test_labels_tensor = torch.tensor(train_df['OC'].values.astype(np.float32))
-test_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude','BAND_12','BAND_3','BAND_4','BAND_5','BAND_6','BAND_8','BAND_8A','SATVI','EVI'], axis = 1).values.astype(np.float32)) 
+test_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude'], axis = 1).values.astype(np.float32)) 
 test_tensor = TensorDataset(test_data_tensor, test_labels_tensor) 
 test_loader = DataLoader(dataset=test_tensor, batch_size = 1)
 
@@ -62,9 +62,11 @@ model = model.to(device=device)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 
 plt.ion()
-fig, ax = plt.subplots(2, figsize=(5, 10))
+fig, ax = plt.subplots(2, 2, figsize=(10, 10))
 train_losses = []
-test_rmses = []
+test_rmspes = []
+test_mapes = []
+test_r2s = []
 
 for e in range(epochs):
     total_loss = 0
@@ -84,23 +86,36 @@ for e in range(epochs):
         loss.backward()
         optimizer.step()
     
-    rmse = float(eval.check_rmse(model, test_loader, device))
-    mae = float(eval.check_mae(model, test_loader, device))
+    rmspe = float(eval.check_rmspe(model, test_loader, device))
+    mape = float(eval.check_mape(model, test_loader, device))
     r2 = float(eval.check_r2(model, test_loader, device))
     total_loss = total_loss.cpu().item() / total_t
     
     train_losses.append(total_loss)
-    test_rmses.append(rmse)
-    ax[0].plot(train_losses, c='black')
-    ax[0].set_title('Train loss')
+    test_rmspes.append(rmspe)
+    test_mapes.append(mape)
+    test_r2s.append(r2)
     
-    ax[1].plot(test_rmses, c='black')
-    ax[1].set_title('Test RMSE')
+    ax[0,0].plot(train_losses, c='black')
+    ax[0,0].set_title('Train loss')
+    
+    ax[1,0].plot(test_rmspes, c='black')
+    ax[1,0].set_title('Test RMSPE')
+    
+    ax[0,1].plot(test_mapes, c='black')
+    ax[0,1].set_title('Test MAPE')
+    
+    ax[1,1].plot(test_r2s, c='black')
+    ax[1,1].set_title('Test R^2')
 
     plt.pause(0.05)
 
-    print('Epoch {:d} | Loss {:.4f} | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(e, total_loss, rmse, mae, r2))
+    print('Epoch {:d} | Loss {:.4f} | RMSPE {:.4f} | MAPE {:.4f} | R2 {:.4f}'.format(e, total_loss, rmspe, mape, r2))
 
 fig.savefig('graph.png')
 plt.close(fig)
 plt.show()
+
+model_save_path = 'models/model.pt'
+
+torch.save(model, model_save_path)
