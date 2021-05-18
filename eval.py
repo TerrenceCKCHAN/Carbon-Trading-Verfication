@@ -91,7 +91,7 @@ if __name__ == "__main__":
     else:
         device = torch.device('cpu')
 
-    model_save_path = 'E:\School\Imperial\individual_project\individual_project\models\EmadiNINet_130521.pt'
+    model_save_path = 'E:\School\Imperial\individual_project\individual_project\models\model.pt'
     model = torch.load(model_save_path)
     model.eval()
 
@@ -117,17 +117,24 @@ if __name__ == "__main__":
     tensor_data = torch.Tensor(all_data).to(device=device)
     tensor_data = tensor_data.transpose(2, 0).transpose(1, 0)
     print(tensor_data)
-    # tensor_data = []
 
     print("Calculating SOC...")
     result_data = []
+    non_zero = 0
     with torch.no_grad():
         for t in tqdm(tensor_data):
-            result_data.append(model(t).cpu())
+            z = model(t).cpu()
+            result_data.append(z)
+            non_zero += torch.count_nonzero(z)
+            z[z!=z] = 0
+            # print(torch.min(z), torch.max(z))
+    print("non_zero:", non_zero)
 
     result_data = torch.stack(result_data).detach().numpy()
+    print("max val: ", np.max(result_data))
+    # result_data[result_data > 100] = 100
 
-    plt.imshow(result_data, cmap='summer')
+    plt.imshow(result_data, cmap='summer_r')
     plt.colorbar()
     plt.show()
     print(image.shape)

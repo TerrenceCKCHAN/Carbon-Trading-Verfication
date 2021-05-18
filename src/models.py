@@ -11,28 +11,28 @@ class EmadiNINet(nn.Module):
     '''
     def __init__(self):
         super(EmadiNINet, self).__init__()
-        dropout_value = 0.5
+        dropout_value = 0.8
+        num_neurons = 50
         self.layers = nn.Sequential(
-            nn.Linear(13, 50),
+            nn.Linear(13, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 50),
+            nn.Linear(num_neurons, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 50),
+            nn.Linear(num_neurons, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 50),
+            nn.Linear(num_neurons, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 50),
+            nn.Linear(num_neurons, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 50),
+            nn.Linear(num_neurons, num_neurons),
             nn.Dropout(dropout_value),
             nn.ReLU(),
-            nn.Linear(50, 1),
-            nn.Dropout(dropout_value),
+            nn.Linear(num_neurons, 1),
             nn.ReLU()
         )
     
