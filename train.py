@@ -36,7 +36,7 @@ def add_indices_columns(data_df):
     return data_df
 
 csv_file_path = "E:\School\Imperial\individual_project\individual_project\data\lucas_sentinel2_data_points_zhou2020.csv"
-lr = 0.01
+lr = 0.005
 epochs = 100
 data_df = load_csv_to_pd(csv_file_path)
 data_df = add_indices_columns(data_df)

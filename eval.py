@@ -132,10 +132,12 @@ if __name__ == "__main__":
 
     result_data = torch.stack(result_data).detach().numpy()
     print("max val: ", np.max(result_data))
-    # result_data[result_data > 100] = 100
+    result_data[result_data > 200] = 200
 
-    plt.imshow(result_data, cmap='summer_r')
+    plt.imshow(result_data, cmap='viridis_r')
     plt.colorbar()
+    plt.savefig('map.png')
     plt.show()
+
     print(image.shape)
     print(image.count)
