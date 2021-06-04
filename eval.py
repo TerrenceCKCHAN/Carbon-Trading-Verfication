@@ -95,7 +95,8 @@ if __name__ == "__main__":
     model = torch.load(model_save_path)
     model.eval()
 
-    image = rasterio.open(f'E:\School\Imperial\individual_project\qgisdata\Multi-size Mosaic_resampled_9band_reprojected_clipped.tif')
+    # image = rasterio.open(f'E:\School\Imperial\individual_project\qgisdata\Multi-size Mosaic_resampled_9band_reprojected_clipped.tif')
+    image = rasterio.open(f'E:\School\Imperial\individual_project\qgisdata\S2A1C_DEM.tif')
 
     num_bands = image.count
     img_width = image.width
@@ -114,15 +115,17 @@ if __name__ == "__main__":
     all_data.append(evi_array)
     all_data.append(satvi_array)
 
-    tensor_data = torch.Tensor(all_data).to(device=device)
-    tensor_data = tensor_data.transpose(2, 0).transpose(1, 0)
-    print(tensor_data)
+    # tensor_data = torch.Tensor(all_data).to(device=device)
+    # tensor_data = tensor_data.transpose(2, 0).transpose(1, 0)
+    # print(tensor_data)
+    all_data = np.dstack(all_data)
 
     print("Calculating SOC...")
     result_data = []
     non_zero = 0
     with torch.no_grad():
-        for t in tqdm(tensor_data):
+        for t in tqdm(all_data):
+            t = torch.Tensor(t).to(device=device)
             z = model(t).cpu()
             result_data.append(z)
             non_zero += torch.count_nonzero(z)
@@ -132,7 +135,7 @@ if __name__ == "__main__":
 
     result_data = torch.stack(result_data).detach().numpy()
     print("max val: ", np.max(result_data))
-    result_data[result_data > 200] = 200
+    # result_data[result_data > 200] = 200
 
     plt.imshow(result_data, cmap='viridis_r')
     plt.colorbar()

@@ -8,6 +8,7 @@ from torch.utils.data import TensorDataset
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 from src.models import EmadiNINet
 import eval
@@ -33,27 +34,32 @@ def add_indices_columns(data_df):
     data_df['NDVI'] = (data_df['BAND_8'] - data_df['BAND_4']) / (data_df['BAND_8'] + data_df['BAND_4'])
     data_df['EVI'] = 2.5 * (data_df['BAND_8'] - data_df['BAND_4']) / (data_df['BAND_8'] + 6 * data_df['BAND_4'] - 7.5 * data_df['BAND_2'] + 1)
     data_df['SATVI'] = 2 * (data_df['BAND_11'] - data_df['BAND_4']) / (data_df['BAND_11'] + data_df['BAND_4'] + 1) - (data_df['BAND_12'] / 2)
+    data_df.loc[~np.isfinite(data_df['NDVI']), 'NDVI'] = 0
+    data_df.loc[~np.isfinite(data_df['EVI']), 'EVI'] = 0
+    data_df.loc[~np.isfinite(data_df['SATVI']), 'SATVI'] = 0
     return data_df
 
-csv_file_path = "E:\School\Imperial\individual_project\individual_project\data\lucas_sentinel2_data_points_zhou2020.csv"
-lr = 0.005
+csv_file_path = "E:\School\Imperial\individual_project\individual_project\data\S2A1C_DEM_LUCASTIN_roi_points.csv"
+lr = 0.0001
 epochs = 100
 data_df = load_csv_to_pd(csv_file_path)
 data_df = add_indices_columns(data_df)
 
 # Split into train and test sets (90/10)
-msk = np.random.rand(len(data_df)) < 1.0
+msk = np.random.rand(len(data_df)) < 0.8
 train_df = data_df[msk]
 test_df = data_df[~msk]
 
+print("Length of training set: ", len(train_df))
+print("Length of test set: ", len(test_df))
 
 train_labels_tensor = torch.tensor(train_df['OC'].values.astype(np.float32))
-train_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude'], axis = 1).values.astype(np.float32)) 
+train_data_tensor = torch.tensor(train_df.drop(['fid','id','left','top','right','bottom','OC'], axis = 1).values.astype(np.float32)) 
 train_tensor = TensorDataset(train_data_tensor, train_labels_tensor) 
-train_loader = DataLoader(dataset=train_tensor, batch_size=1, shuffle=True)
+train_loader = DataLoader(dataset=train_tensor, batch_size=32, shuffle=True)
 
-test_labels_tensor = torch.tensor(train_df['OC'].values.astype(np.float32))
-test_data_tensor = torch.tensor(train_df.drop(['POINT_ID','OC','sample_ID','latitude','longitude'], axis = 1).values.astype(np.float32)) 
+test_labels_tensor = torch.tensor(test_df['OC'].values.astype(np.float32))
+test_data_tensor = torch.tensor(test_df.drop(['fid','id','left','top','right','bottom','OC'], axis = 1).values.astype(np.float32)) 
 test_tensor = TensorDataset(test_data_tensor, test_labels_tensor) 
 test_loader = DataLoader(dataset=test_tensor, batch_size = 1)
 
@@ -68,7 +74,7 @@ test_rmspes = []
 test_mapes = []
 test_r2s = []
 
-for e in range(epochs):
+for e in tqdm(range(epochs)):
     total_loss = 0
     total_t = 0
     zs = []
@@ -78,7 +84,8 @@ for e in range(epochs):
         y = y.to(device=device)
 
         z = model(x)
-        zs.append(z.cpu().item())
+        z_array = z.detach().cpu().numpy()
+        zs.extend(z_array)
 
         loss = F.mse_loss(z, y)
         total_t += 1
@@ -87,7 +94,6 @@ for e in range(epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    
     rmspe = float(eval.check_rmspe(model, test_loader, device))
     mape = float(eval.check_mape(model, test_loader, device))
     r2 = float(eval.check_r2(model, test_loader, device))
