@@ -139,7 +139,7 @@ lucas_loader = DataLoader(dataset=lucas_tensor, batch_size=1)
 lucas_rmse = float(eval.check_rmse(model, lucas_loader, device))
 lucas_mae = float(eval.check_mae(model, lucas_loader, device))
 lucas_r2 = float(eval.check_r2(model, lucas_loader, device))
-print('LUCAS2009 ZHOU2020 RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(lucas_rmse, lucas_rmse, lucas_mae, lucas_r2))
+print('LUCAS2009 ZHOU2020 RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(lucas_rmse, lucas_mae, lucas_r2))
 
 
 fig.savefig('training_graph.png')
