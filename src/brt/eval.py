@@ -52,9 +52,21 @@ print("max val: ", np.max(result_data))
 plt.hist(result_data.flatten(), bins=np.linspace(0, 500, 100), histtype=u'step', density=True)
 plt.savefig('brt_inference_histogram.png')
 plt.show()
-result_data[result_data > 200] = 200
 
 plt.imshow(result_data, cmap='viridis_r')
 plt.colorbar()
 plt.savefig('brt_map.png')
 plt.show()
+
+with rasterio.open(
+    'out/brt_map.tif',
+    'w',
+    driver='GTiff',
+    height=result_data.shape[0],
+    width=result_data.shape[1],
+    count=1,
+    dtype=result_data.dtype,
+    crs='+proj=latlong',
+    transform=image.transform,
+) as dst:
+    dst.write(result_data, 1)

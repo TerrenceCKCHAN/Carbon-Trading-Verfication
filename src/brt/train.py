@@ -39,8 +39,13 @@ y_test = np.log(test_df['OC'].values.astype(np.float32))
 X_lucas = lucas_data_df[features_list].values.astype(np.float32)
 y_lucas = np.log(lucas_data_df['OC'].values.astype(np.float32))
 
-brt = GradientBoostingRegressor(n_estimators=10, learning_rate=0.1,
-    max_depth=10, random_state=0, loss='ls').fit(X_train, y_train)
+brt = GradientBoostingRegressor(
+    n_estimators=1000,
+    learning_rate=0.01,
+    max_depth=5,
+    random_state=0,
+    loss='ls'
+).fit(X_train, y_train)
 
 test_rmse = np.sqrt(mean_squared_error(y_test, brt.predict(X_test)))
 test_mae = mean_absolute_error(y_test, brt.predict(X_test))
