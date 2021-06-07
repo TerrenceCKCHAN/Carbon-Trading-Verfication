@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+import pandas as pd
 
 def check_rmse(model, test_loader, device):
     num_samples = 0
@@ -105,21 +106,17 @@ if __name__ == "__main__":
 
 
     print("Converting Raster to Array...")
-    for i in range(num_bands):
-        all_data.append(image.read(i+1))
+    for i in tqdm(range(num_bands)):
+        data = image.read(i+1)
+        data = pd.DataFrame(data).replace([np.inf, -np.inf], np.nan).fillna(0).to_numpy()
+        all_data.append(data)
 
-    # print("Calculating VIs...")
-    # ndvi_array = (all_data[8] - all_data[4]) / (all_data[8] + all_data[4])
-    # evi_array = 2.5 * (all_data[8] - all_data[4]) / (all_data[8] + 6 * all_data[4] - 7.5 * all_data[2] + 1)
-    # satvi_array = 2 * (all_data[0] - all_data[4]) / (all_data[0] + all_data[4] + 1) - (all_data[1] / 2)
-    # all_data.append(ndvi_array)
-    # all_data.append(evi_array)
-    # all_data.append(satvi_array)
-
-    # tensor_data = torch.Tensor(all_data).to(device=device)
-    # tensor_data = tensor_data.transpose(2, 0).transpose(1, 0)
-    # print(tensor_data)
     all_data = np.dstack(all_data)
+    all_data_shape = all_data.shape
+    print("Raster array shape:", all_data_shape)
+
+    print(np.any(np.isnan(all_data))) # False
+    print(np.all(np.isfinite(all_data))) # True
 
     print("Calculating SOC...")
     result_data = []
@@ -131,17 +128,28 @@ if __name__ == "__main__":
             result_data.append(z)
             non_zero += torch.count_nonzero(z)
             z[z!=z] = 0
-            # print(torch.min(z), torch.max(z))
     print("non_zero:", non_zero)
 
     result_data = np.exp(torch.stack(result_data).detach().numpy())
     print("max val: ", np.max(result_data))
     plt.hist(result_data.flatten(), bins=np.linspace(0, 500, 100), histtype=u'step', density=True)
-    plt.savefig('inference_histogram.png')
+    plt.savefig('nn_inference_histogram.png')
     plt.show()
-    result_data[result_data > 200] = 200
 
     plt.imshow(result_data, cmap='viridis_r')
     plt.colorbar()
-    plt.savefig('map.png')
+    plt.savefig('nn_map.png')
     plt.show()
+
+    with rasterio.open(
+        'out/nn_map.tif',
+        'w',
+        driver='GTiff',
+        height=result_data.shape[0],
+        width=result_data.shape[1],
+        count=1,
+        dtype=result_data.dtype,
+        crs='+proj=latlong',
+        transform=image.transform,
+    ) as dst:
+        dst.write(result_data, 1)

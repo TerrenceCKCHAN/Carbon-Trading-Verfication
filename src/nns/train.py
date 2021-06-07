@@ -27,18 +27,6 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-def add_indices_columns(data_df):
-    '''
-    Adds NDVI, EVI, SATVI vegetation indices to dataset
-    '''
-    data_df['NDVI'] = (data_df['BAND_8'] - data_df['BAND_4']) / (data_df['BAND_8'] + data_df['BAND_4'])
-    data_df['EVI'] = 2.5 * (data_df['BAND_8'] - data_df['BAND_4']) / (data_df['BAND_8'] + 6 * data_df['BAND_4'] - 7.5 * data_df['BAND_2'] + 1)
-    data_df['SATVI'] = 2 * (data_df['BAND_11'] - data_df['BAND_4']) / (data_df['BAND_11'] + data_df['BAND_4'] + 1) - (data_df['BAND_12'] / 2)
-    data_df.loc[~np.isfinite(data_df['NDVI']), 'NDVI'] = 0
-    data_df.loc[~np.isfinite(data_df['EVI']), 'EVI'] = 0
-    data_df.loc[~np.isfinite(data_df['SATVI']), 'SATVI'] = 0
-    return data_df
-
 csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
 lucas_csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_LUCAS2009_zhou2020_points.csv"
 # csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S2A1C_DEM_LUCASTIN_roi_points.csv"
@@ -46,9 +34,7 @@ lr = 0.001
 epochs = 100
 data_df = load_csv_to_pd(csv_file_path)
 lucas_data_df = load_csv_to_pd(lucas_csv_file_path)
-# data_df = add_indices_columns(data_df)
 
-# Split into train and test sets (90/10)
 msk = np.random.rand(len(data_df)) < 0.8
 train_df = data_df[msk]
 test_df = data_df[~msk]
@@ -56,20 +42,27 @@ test_df = data_df[~msk]
 print("Length of training set: ", len(train_df))
 print("Length of test set: ", len(test_df))
 
+features_list = [
+    'VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5',
+    'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI',
+    'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI'
+]
+
+# features_list = [
+#     'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI'
+# ]
 
 train_labels_tensor = torch.tensor(np.log(train_df['OC'].values.astype(np.float32)))
-# train_data_tensor = torch.tensor(train_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5']].values.astype(np.float32)) 
-train_data_tensor = torch.tensor(train_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5', 'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI', 'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI']].values.astype(np.float32)) 
+train_data_tensor = torch.tensor(train_df[features_list].values.astype(np.float32)) 
 train_tensor = TensorDataset(train_data_tensor, train_labels_tensor) 
-train_loader = DataLoader(dataset=train_tensor, batch_size=16, shuffle=True)
+train_loader = DataLoader(dataset=train_tensor, batch_size=32, shuffle=True)
 
 test_labels_tensor = torch.tensor(np.log(test_df['OC'].values.astype(np.float32)))
-# test_data_tensor = torch.tensor(test_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5']].values.astype(np.float32)) 
-test_data_tensor = torch.tensor(test_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5', 'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI', 'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI']].values.astype(np.float32)) 
+test_data_tensor = torch.tensor(test_df[features_list].values.astype(np.float32)) 
 test_tensor = TensorDataset(test_data_tensor, test_labels_tensor) 
 test_loader = DataLoader(dataset=test_tensor, batch_size = 1)
 
-model = SimpleNet()
+model = SimpleNet(len(features_list), layers=7, neurons=100, dropout=0.2)
 model = model.to(device=device)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 
@@ -131,8 +124,7 @@ for e in tqdm(range(epochs)):
     print('Epoch {:d} | Loss {:.4f} | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(e, total_loss, rmse, mae, r2))
 
 lucas_labels_tensor = torch.tensor(np.log(lucas_data_df['OC'].values.astype(np.float32)))
-# lucas_data_tensor = torch.tensor(lucas_data_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5']].values.astype(np.float32)) 
-lucas_data_tensor = torch.tensor(lucas_data_df[['VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5', 'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI', 'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI']].values.astype(np.float32)) 
+lucas_data_tensor = torch.tensor(lucas_data_df[features_list].values.astype(np.float32)) 
 lucas_tensor = TensorDataset(lucas_data_tensor, lucas_labels_tensor) 
 lucas_loader = DataLoader(dataset=lucas_tensor, batch_size=1)
 
@@ -142,7 +134,7 @@ lucas_r2 = float(eval.check_r2(model, lucas_loader, device))
 print('LUCAS2009 ZHOU2020 RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(lucas_rmse, lucas_mae, lucas_r2))
 
 
-fig.savefig('training_graph.png')
+fig.savefig('nn_training_graph.png')
 plt.close(fig)
 plt.show()
 plt.ioff()

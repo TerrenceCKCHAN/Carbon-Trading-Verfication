@@ -33,8 +33,8 @@ all_data = np.dstack(all_data)
 all_data_shape = all_data.shape
 print("Raster array shape:", all_data_shape)
 
-print(np.any(np.isnan(all_data)))
-print(np.all(np.isfinite(all_data)))
+print(np.any(np.isnan(all_data))) # False
+print(np.all(np.isfinite(all_data))) # True
 
 print("Calculating SOC...")
 result_data = []

@@ -9,32 +9,24 @@ class SimpleNet(nn.Module):
         Learning rate = 0.001-0.05
         Epochs = 100
     '''
-    def __init__(self):
+    def __init__(self, input_neurons, layers=5, neurons=50, dropout=0.5):
         super(SimpleNet, self).__init__()
-        dropout_value = 0.5
-        num_neurons = 50
-        self.layers = nn.Sequential(
-            nn.Linear(28, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, num_neurons),
-            nn.Dropout(dropout_value),
-            nn.ReLU(),
-            nn.Linear(num_neurons, 1),
-            nn.ReLU()
-        )
+        dropout_value = dropout
+        num_neurons = neurons
+        layers_list = []
+        assert(layers >= 2)
+        layers_list.append(nn.Linear(input_neurons, num_neurons))
+        layers_list.append(nn.Dropout(dropout_value))
+        layers_list.append(nn.ReLU())
+
+        for i in range(layers - 2):
+            layers_list.append(nn.Linear(num_neurons, num_neurons))
+            layers_list.append(nn.Dropout(dropout_value))
+            layers_list.append(nn.ReLU())
+
+        layers_list.append(nn.Linear(num_neurons, 1))
+        layers_list.append(nn.ReLU())
+        self.layers = nn.Sequential(*layers_list)
     
     def forward(self, x):
         z = self.layers(x)
