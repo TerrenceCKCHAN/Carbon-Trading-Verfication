@@ -88,7 +88,7 @@ if __name__ == "__main__":
         device = torch.device('cpu')
     print("Using:", device)
     print("Loading Model...")
-    model_save_path = r'C:\Users\kothi\Documents\individual_project\individual_project\models\model.pt'
+    model_save_path = r'C:\Users\kothi\Documents\individual_project\individual_project\models\nnmodel.pt'
     model = torch.load(model_save_path)
     model.eval()
 

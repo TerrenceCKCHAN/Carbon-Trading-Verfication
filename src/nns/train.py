@@ -30,8 +30,8 @@ def load_csv_to_pd(csv_file_path):
 csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.02.csv"
 lucas_csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_LUCAS2009_zhou2020_points.csv"
 # csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S2A1C_DEM_LUCASTIN_roi_points.csv"
-lr = 0.05
-epochs = 50
+lr = 0.01
+epochs = 20
 data_df = load_csv_to_pd(csv_file_path)
 lucas_data_df = load_csv_to_pd(lucas_csv_file_path)
 
@@ -62,7 +62,7 @@ test_data_tensor = torch.tensor(test_df[features_list].values.astype(np.float32)
 test_tensor = TensorDataset(test_data_tensor, test_labels_tensor) 
 test_loader = DataLoader(dataset=test_tensor, batch_size = 1)
 
-model = SimpleNet(len(features_list), layers=4, neurons=20, dropout=0.5)
+model = SimpleNet(len(features_list), layers=5, neurons=30, dropout=0.2)
 model = model.to(device=device)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 
@@ -138,6 +138,6 @@ fig.savefig('nn_training_graph.png')
 plt.close(fig)
 plt.show()
 plt.ioff()
-model_save_path = 'models/model.pt'
+model_save_path = 'models/nnmodel.pt'
 
 torch.save(model, model_save_path)
