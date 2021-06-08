@@ -5,7 +5,6 @@ import rasterio
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.datasets import make_friedman1
 from sklearn.ensemble import GradientBoostingRegressor
 
 print("Start")

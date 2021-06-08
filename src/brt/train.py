@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import joblib
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.datasets import make_friedman1
 from sklearn.ensemble import GradientBoostingRegressor
 
 def load_csv_to_pd(csv_file_path):

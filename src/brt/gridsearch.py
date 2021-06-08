@@ -3,7 +3,6 @@ import pandas as pd
 import joblib
 import itertools
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.datasets import make_friedman1
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import cross_validate, ShuffleSplit
 from tqdm import tqdm
