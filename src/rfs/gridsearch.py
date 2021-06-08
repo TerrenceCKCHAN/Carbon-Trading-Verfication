@@ -9,7 +9,7 @@ from sklearn.model_selection import cross_validate, ShuffleSplit
 from tqdm import tqdm
 from sklearn.metrics import make_scorer
 
-n_estimators_space = [1, 10, 50, 100, 200, 500, 1000]
+n_estimators_space = [100, 200, 300, 400, 500]
 max_features_space = range(1, 29)
 
 
