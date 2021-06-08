@@ -19,9 +19,13 @@ class SimpleNet(nn.Module):
         layers_list.append(nn.Dropout(dropout_value))
         layers_list.append(nn.ReLU())
 
+
         for i in range(layers - 2):
             layers_list.append(nn.Linear(num_neurons, num_neurons))
-            layers_list.append(nn.Dropout(dropout_value))
+            if i % 2 == 0:
+                layers_list.append(nn.Dropout(dropout_value))
+            else:
+                layers_list.append(nn.BatchNorm1d(num_neurons))
             layers_list.append(nn.ReLU())
 
         layers_list.append(nn.Linear(num_neurons, 1))

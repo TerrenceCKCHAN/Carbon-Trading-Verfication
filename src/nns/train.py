@@ -27,11 +27,11 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.02.csv"
 lucas_csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_LUCAS2009_zhou2020_points.csv"
 # csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S2A1C_DEM_LUCASTIN_roi_points.csv"
-lr = 0.001
-epochs = 100
+lr = 0.05
+epochs = 50
 data_df = load_csv_to_pd(csv_file_path)
 lucas_data_df = load_csv_to_pd(lucas_csv_file_path)
 
@@ -55,14 +55,14 @@ features_list = [
 train_labels_tensor = torch.tensor(np.log(train_df['OC'].values.astype(np.float32)))
 train_data_tensor = torch.tensor(train_df[features_list].values.astype(np.float32)) 
 train_tensor = TensorDataset(train_data_tensor, train_labels_tensor) 
-train_loader = DataLoader(dataset=train_tensor, batch_size=32, shuffle=True)
+train_loader = DataLoader(dataset=train_tensor, batch_size=128, shuffle=True)
 
 test_labels_tensor = torch.tensor(np.log(test_df['OC'].values.astype(np.float32)))
 test_data_tensor = torch.tensor(test_df[features_list].values.astype(np.float32)) 
 test_tensor = TensorDataset(test_data_tensor, test_labels_tensor) 
 test_loader = DataLoader(dataset=test_tensor, batch_size = 1)
 
-model = SimpleNet(len(features_list), layers=7, neurons=100, dropout=0.2)
+model = SimpleNet(len(features_list), layers=4, neurons=20, dropout=0.5)
 model = model.to(device=device)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 

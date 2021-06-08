@@ -14,11 +14,11 @@ import itertools
 from models import SimpleNet
 import eval
 
-layers_space = [2, 3, 5, 7]
-neurons_space = [20, 50, 100]
-dropout_space = [0.2, 0.5, 0.7]
+layers_space = [7, 9, 10]
+neurons_space = [10, 20, 50]
+dropout_space = [0.2, 0.5]
 lr_space = [0.01, 0.005, 0.001, 0.0005]
-epochs_space = [20, 50, 100]
+epochs_space = [50, 100, 150]
 # layers_space = [7]
 # neurons_space = [20]
 # dropout_space = [0.2]
@@ -70,7 +70,7 @@ for lr, epochs, dropout, layers, neurons in tqdm(list(itertools.product(lr_space
         train_labels_tensor = torch.tensor(np.log(train_df['OC'].values.astype(np.float32)))
         train_data_tensor = torch.tensor(train_df[features_list].values.astype(np.float32)) 
         train_tensor = TensorDataset(train_data_tensor, train_labels_tensor) 
-        train_loader = DataLoader(dataset=train_tensor, batch_size=16, shuffle=True)
+        train_loader = DataLoader(dataset=train_tensor, batch_size=32, shuffle=True)
 
         test_labels_tensor = torch.tensor(np.log(test_df['OC'].values.astype(np.float32)))
         test_data_tensor = torch.tensor(test_df[features_list].values.astype(np.float32)) 
