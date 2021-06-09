@@ -9,11 +9,14 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_SoilGrids2_0_roi_points_0.02.csv"
+# csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
 lucas_csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_LUCAS2009_zhou2020_points.csv"
 # csv_file_path = lucas_csv_file_path
 data_df = load_csv_to_pd(csv_file_path)
 lucas_data_df = load_csv_to_pd(lucas_csv_file_path)
+
+data_df['OC'] = data_df['OC'].str.replace('\"', '').astype(float)
 
 msk = np.random.rand(len(data_df)) < 0.8
 train_df = data_df[msk]
@@ -30,18 +33,18 @@ features_list = [
 # ]
 
 X_train = train_df[features_list].values.astype(np.float32)
-y_train = np.log(train_df['OC'].values.astype(np.float32))
+y_train = np.log(train_df['OC'].values + 0.1)
 
 X_test = test_df[features_list].values.astype(np.float32)
-y_test = np.log(test_df['OC'].values.astype(np.float32))
+y_test = np.log(test_df['OC'].values + 0.1)
 
 X_lucas = lucas_data_df[features_list].values.astype(np.float32)
 y_lucas = np.log(lucas_data_df['OC'].values.astype(np.float32))
 
 brt = GradientBoostingRegressor(
-    n_estimators=1000,
+    n_estimators=500,
     learning_rate=0.01,
-    max_depth=5,
+    max_depth=3,
     random_state=0,
     loss='ls'
 ).fit(X_train, y_train)

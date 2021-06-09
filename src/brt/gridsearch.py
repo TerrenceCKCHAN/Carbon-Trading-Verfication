@@ -18,7 +18,8 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+# csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_SoilGrids2_0_points.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
@@ -27,8 +28,10 @@ features_list = [
     'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI'
 ]
 
+data_df['OC'] = data_df['OC'].str.replace('\"', '').astype(float)
+
 X = data_df[features_list].values.astype(np.float32)
-y = np.log(data_df['OC'].values.astype(np.float32))
+y = np.log(data_df['OC'].values.astype(np.float32) + 0.1)
 
 scoring = {
     'mean_squared_error': make_scorer(mean_squared_error), 
