@@ -6,8 +6,8 @@ features_list = [
     'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI'
 ]
 
-model_path = "models/brtmodel_SoilGrids_090621_1.joblib.pkl"
-# model_path = "models/rfmodel_080621_1.joblib.pkl"
+# model_path = "models/brtmodel_SoilGrids_090621_1.joblib.pkl"
+model_path = "models/rfmodel_080621_1.joblib.pkl"
 print("Loading model", model_path, "...")
 model = joblib.load(model_path)
 

@@ -31,7 +31,7 @@ features_list = [
 data_df['OC'] = data_df['OC'].str.replace('\"', '').astype(float)
 
 X = data_df[features_list].values.astype(np.float32)
-y = np.log(data_df['OC'].values.astype(np.float32) + 0.1)
+y = np.log(data_df['OC'].values.astype(np.float32))
 
 scoring = {
     'mean_squared_error': make_scorer(mean_squared_error), 
