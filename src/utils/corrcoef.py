@@ -3,13 +3,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+from statsmodels.tools.tools import add_constant
 
 def load_csv_to_pd(csv_file_path):
     df = pd.read_csv(csv_file_path, sep=r'\s*,\s*', engine='python')
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+# csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
+csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.02.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
@@ -32,24 +34,19 @@ plt.show()
 # Calculate VIF
 
 x = df.drop('OC', 1)
+# Need to add constant to match calculation in R (https://stackoverflow.com/questions/42658379/variance-inflation-factor-in-python)
+x = add_constant(x)
 y = df['OC']
 
 thresh = 10
-out = pd.DataFrame()
+final_feature_list = []
 
 n = x.shape[1]
 
 vif = [variance_inflation_factor(x.values, i) for i in range(n)]
+print(pd.Series(vif, index=x.columns))
 for i in range(1, n):
-    a = np.argmax(vif)
-    if vif[a] <= thresh:
-        break
-    if i == 1:
-        out = x.drop(x.columns[a], axis=1)
-        vif = [variance_inflation_factor(out.values, j) for j in range(out.shape[1])]
-    else:
-        out = out.drop(out.columns[a], axis=1)
-        vif = [variance_inflation_factor(out.values, j) for j in range(out.shape[1])]
+    if vif[i] <= thresh:
+        final_feature_list.append(x.columns[i])
 
-print(out.columns)
-print(out.values)
+print("Final features list:", final_feature_list)
