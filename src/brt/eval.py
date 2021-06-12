@@ -8,7 +8,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.ensemble import GradientBoostingRegressor
 
 print("Start")
-model_path = "models/brtmodel.joblib.pkl"
+model_path = "models/brtmodel_SoilGrids_nonlog_120621.joblib.pkl"
+# model_path = "models/brtmodel.joblib.pkl"
 print("Loading model", model_path, "...")
 brt = joblib.load(model_path)
 
@@ -46,7 +47,8 @@ for t in tqdm(all_data):
     # print(torch.min(z), torch.max(z))
 print("non_zero:", non_zero)
 
-result_data = np.exp(np.stack(result_data))
+# result_data = np.exp(np.stack(result_data))
+result_data = np.stack(result_data)
 print("max val: ", np.max(result_data))
 plt.hist(result_data.flatten(), bins=np.linspace(0, 500, 100), histtype=u'step', density=True)
 plt.savefig('brt_inference_histogram.png')

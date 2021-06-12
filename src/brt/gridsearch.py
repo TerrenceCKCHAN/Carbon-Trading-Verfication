@@ -8,7 +8,8 @@ from sklearn.model_selection import cross_validate, ShuffleSplit
 from tqdm import tqdm
 from sklearn.metrics import make_scorer
 
-n_estimators_space = [1, 10, 50, 100, 200, 500, 1000]
+# n_estimators_space = [1, 10, 50, 100, 200, 500, 1000]
+n_estimators_space = [1, 10, 50, 100, 200]
 lr_space = [0.5, 0.1, 0.05, 0.01, 0.005]
 max_depth_space = [1, 2, 3, 4, 5, 10]
 
@@ -19,7 +20,7 @@ def load_csv_to_pd(csv_file_path):
     return df
 
 # csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_SoilGrids2_0_points.csv"
+csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_SoilGrids2_0_roi_points_0.02.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
@@ -28,10 +29,16 @@ features_list = [
     'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI'
 ]
 
+
+#### Uncommment for SoilGrids testing
 data_df['OC'] = data_df['OC'].str.replace('\"', '').astype(float)
+####
 
 X = data_df[features_list].values.astype(np.float32)
 y = np.log(data_df['OC'].values.astype(np.float32))
+#### Uncommment for SoilGrids testing
+y = data_df['OC'].values.astype(np.float32)
+####
 
 scoring = {
     'mean_squared_error': make_scorer(mean_squared_error), 
