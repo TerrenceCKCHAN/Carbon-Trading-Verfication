@@ -154,8 +154,8 @@ def run(settings, model_name, filename, region, tag):
     #print_tree(model[2], filename, feature_list)
     var_rank = plot_var_rank(model, model_name, feature_list, file_dir)
 
-    run_raster(model, model_name, region)
-    draw_map(model_name, region, file_dir)
+    # run_raster(model, model_name, region)
+    # draw_map(model_name, region, file_dir)
 
     return  model, scores, var_rank
 
@@ -703,14 +703,33 @@ def main():
     region = 'quick'
     tag = '300'
 
+
+    print(f'Running all data')
+    settings = [True, True, 'pca', 'allFeatEng_allData']
+    data, labels = import_region_grid(region, tag)
+    labels = labels.values.ravel()
+    xgb, xgb_scores, xgb_var_rank = run(settings, model_name, filename, region, tag)
+
+    print(f'Running Landsat')
+    settings = [True, True, 'pca', 'allFeatEng_landsat']
     data, labels = import_landsat_grid(region, tag)
     labels = labels.values.ravel()
+    xgb_landsat, xgb_scores_landsat, xgb_var_rank_landsat = run(settings, model_name, filename, region, tag)
 
-    hyperparameter_tuning_rf(np.nan_to_num(data),np.nan_to_num(labels))
+    print(f'Running Sentinel')
+    settings = [True, True, 'pca', 'allFeatEng_sentinel']
+    data, labels = import_sentinel_grid(region, tag)
+    labels = labels.values.ravel()
+    xgb_sentinel, xgb_scores_sentinel, xgb_var_rank_sentinel = run(settings, model_name, filename, region, tag)
 
-    #hyperparameter_tuning_rf()
+    print(f'Results for ALL DATA')
+    print(f'XGB SCORES {xgb_scores}')
 
-    # model_name = 'xgboost'
+    print(f'Results for LANDSAT')
+    print(f'XGB LANDSAT SCORES {xgb_scores_landsat}')
+
+    print(f'Results for SENTINEL')
+    print(f'XGB SENTINEL SCORES {xgb_scores_sentinel}')    # model_name = 'xgboost'
     # region = 'quick'
     # tag = '300'
     # settings = [True, False, '', 'onehot', 'hypertuning']
