@@ -29,46 +29,35 @@ from rasterio.plot import show
 
 import numpy as np
 
-from import_data import import_satellite_data, import_tree_carbon_data
 
 # ------------------- Scaling data ----------------------------------------
 
 def log_transform(data):
-    # select the float columns
+    # Select the float columns
     float_features = data.select_dtypes(include=[np.float]).columns
     for feature in float_features:
-        # print(f'{feature} before {data.loc[:,feature]}')
         data.loc[:,feature] = np.log(data.loc[:,feature].ravel()+1+abs(data.loc[:,feature].min()))
-        # print(f'{feature} after {data.loc[:,feature]}')
     return data
 
-def standardization(data):
-    float_features = data.select_dtypes(include=[np.float]).columns
-    print(float_features)
-    for feature in float_features:
-        # print(f'{feature} before {data.loc[:,feature]}')
-        data.loc[:,feature] = (data.loc[:,feature] - data.loc[:,feature].mean()) / data.loc[:,feature].std()
-        # print(f'{feature} after {data.loc[:,feature]}')
-
-    return data
 # ------------- Dimensionality reduction ---------------------------------
 
-def dim_reduction(train_features, test_features, train_labels, type):
-    if type == 'pca':
+def dim_reduction(train_features, test_features, train_labels, settings, n_components):
+    # If there is no inven and the dataset is sentinel, there are only two features
+    if settings['dataset']  ==  'sentinel' and settings['inven'] == False:
+        n_components = 2
+    if settings['dim'] == 'pca':
         print('PCA')
-        pca = PCA(n_components = 7)
+        pca = PCA(n_components = n_components)
         train_features = pca.fit_transform(train_features)
         test_features = pca.transform(test_features)
-    elif type == 'pda':
+    elif settings['dim'] == 'pda':
         print('PDA')
-        pda = PDA(n_components = 7)
+        pda = PDA(n_components = n_components)
         train_features = pda.fit_transform(train_features, train_labels)
         test_features = pda.transform(test_features)
     return train_features, test_features
 
 def main():
-    data, labels = import_satellite_data()
-
-    data = log_transform(data)
+    print("Feature Engineering main")
 if __name__ == "__main__":
     main()
