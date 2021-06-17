@@ -80,7 +80,7 @@ When `run` is called, the program builds, trains, tests and analyses the model s
 - _errorMap
 - _topVar
 - .sav (saved model)
-- .tif (prrediction raster)
+- .tif (prediction raster)
 
 There is also the option to plot the histogram of the data distribution.
 
