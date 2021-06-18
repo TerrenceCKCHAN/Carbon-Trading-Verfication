@@ -91,7 +91,7 @@ There is also the option to plot the histogram of the data distribution.
 As mentioned beforehand, the program can be executed from main file by calling `run` on different setting configurations. Please note the filename is modified by the code for each dataset (ie the code will reflect a  `dataset` change from `sentinel` to `landsat` in the outputted files (from xxx_sentinel_scatter to xxx_landsat_scatter).
 
 ## XGBoost
-The XGBoost implementation used is from Chen, Tianqi and Guestrin, Carlos [[1]] (#1).
+The XGBoost implementation used is from Chen, Tianqi and Guestrin, Carlos [1].
 
 
 ## References
