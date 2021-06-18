@@ -74,7 +74,7 @@ The input and output files are split into `input` and `output` folders respectiv
 
 The output files are organised by region first as well, and then subcategorised by model. The generated plots, raster files and carbon maps are stored in there.
 
-Please note that before using the code the files must be downloaded from AWS.
+Please note that before using the code the files must be downloaded from [here (AWS)](https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-carla/Program+Data.zip "AWS").
 
 ## Generated plots
 When `run` is called, the program builds, trains, tests and analyses the model specified by the `settings`. As part of the analysis, the program builds several plots and stores them in the correct subdirectory, named after `filename` and with the corresponding abbreviation:
