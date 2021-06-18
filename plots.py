@@ -23,7 +23,7 @@ import statistics
 from rasterio.plot import show
 
 from sklearn import svm
-from model_params import get_extended_columns
+from model_params import get_extended_columns, get_columns
 
 def plot_results(predictions, errors, y_test, filename):
     # Plot the actual values
@@ -169,8 +169,10 @@ def var_importance(model, settings, features):
     [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances];
 
 def plot_topVar(model, settings, top):
-
-    column_names = get_extended_columns(settings)
+    if settings['inven']:
+        column_names = get_extended_columns(settings)
+    else:
+        column_names = get_columns(settings)
 
     top_feat = pd.Series(model.feature_importances_*100, index=column_names).nlargest(top)
     #print(top_feat)

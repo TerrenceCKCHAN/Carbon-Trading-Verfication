@@ -321,14 +321,14 @@ def prediction_raster(model, settings):
 def main():
 
     settings = {
-        'dataset': 'landsat',
+        'dataset': 'combined',
         'region': 'quick',
-        'model': 'linear',
-        'inven': False,
-        'filename': 'tuned_cap',
+        'model': 'random_forest',
+        'inven': True,
+        'filename': 'tuned_noFEng',
         'cap': 0,
         'log': False,
-        'dim': 'pca',
+        'dim': '',
         'log_label': False,
     }
     run(settings)
