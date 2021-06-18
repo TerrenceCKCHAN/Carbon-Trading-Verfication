@@ -89,3 +89,24 @@ There is also the option to plot the histogram of the data distribution.
 
 ## Execution
 As mentioned beforehand, the program can be executed from main file by calling `run` on different setting configurations. Please note the filename is modified by the code for each dataset (ie the code will reflect a  `dataset` change from `sentinel` to `landsat` in the outputted files (from xxx_sentinel_scatter to xxx_landsat_scatter).
+
+## XGBoost
+The XGBoost implementation used is from Chen, Tianqi and Guestrin, Carlos [[1]] (#1).
+
+
+## References
+<a id="1">[1]</a> 
+Chen, Tianqi and Guestrin, Carlos
+XGBoost: A Scalable Tree Boosting System,
+Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining,
+KDD '16,
+2016,
+978-1-4503-4232-2,
+San Francisco, California, USA,
+785--794,
+10,
+http://doi.acm.org/10.1145/2939672.2939785,
+10.1145/2939672.2939785,
+2939785,
+ACM,
+New York, NY, USA.
