@@ -54,17 +54,17 @@ print(np.max(brt.predict(X_test)))
 print(np.mean(brt.predict(X_test)))
 
 predict_test = brt.predict(X_test)
-predict_test[predict_test<0] = 0
-test_rmse = np.sqrt(mean_squared_error(np.log(y_test + 1), np.log(predict_test + 1)))
-test_mae = mean_absolute_error(np.log(y_test + 1), np.log(predict_test + 1))
-test_r2 = r2_score(np.log(y_test + 1), np.log(predict_test + 1))
+# predict_test[predict_test<0] = 0
+test_rmse = np.sqrt(mean_squared_error(y_test, predict_test))
+test_mae = mean_absolute_error(y_test, predict_test)
+test_r2 = r2_score(y_test, predict_test)
 print('TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2))
 
 predict_lucas = brt.predict(X_lucas)
 predict_lucas[predict_lucas<0] = 0
-lucas_rmse = np.sqrt(mean_squared_error(np.log(y_lucas + 1), np.log(predict_lucas + 1)))
-lucas_mae = mean_absolute_error(np.log(y_lucas + 1), np.log(predict_lucas + 1))
-lucas_r2 = r2_score(np.log(y_lucas + 1), np.log(predict_lucas + 1))
+lucas_rmse = np.sqrt(mean_squared_error(y_lucas, predict_lucas))
+lucas_mae = mean_absolute_error(y_lucas, predict_lucas)
+lucas_r2 = r2_score(y_lucas, predict_lucas)
 print('LUCAS ZHOU2020 RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(lucas_rmse, lucas_mae, lucas_r2))
 
 joblib.dump(brt, "models/brtmodel.joblib.pkl", compress=3)
