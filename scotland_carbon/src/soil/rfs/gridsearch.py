@@ -3,15 +3,13 @@ import pandas as pd
 import joblib
 import itertools
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import cross_validate, ShuffleSplit
 from tqdm import tqdm
 from sklearn.metrics import make_scorer
 
-# n_estimators_space = [1, 10, 50, 100, 200, 500, 1000]
-n_estimators_space = [1, 10, 50, 100, 200]
-lr_space = [0.5, 0.1, 0.05, 0.01, 0.005]
-max_depth_space = [1, 2, 3, 4, 5, 10]
+n_estimators_space = [100, 200, 300, 400, 500]
+max_features_space = range(5, 20)
 
 
 def load_csv_to_pd(csv_file_path):
@@ -19,7 +17,7 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_300m_processed.csv"
+csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
@@ -28,16 +26,8 @@ features_list = [
     'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI'
 ]
 
-
-#### Uncommment for SoilGrids testing
-data_df['OC'] = data_df['OC'].str.replace('\"', '').astype(float)
-####
-
 X = data_df[features_list].values.astype(np.float32)
 y = np.log(data_df['OC'].values.astype(np.float32))
-#### Uncommment for SoilGrids testing
-y = data_df['OC'].values.astype(np.float32)
-####
 
 scoring = {
     'mean_squared_error': make_scorer(mean_squared_error), 
@@ -47,31 +37,27 @@ scoring = {
 cv_splits = 5
 cv = ShuffleSplit(n_splits=cv_splits, test_size=0.2, random_state=0)
 
-results_df = pd.DataFrame(columns=['idx', 'lr', 'n_estimators', 'max_depth', 'fit_time', 'score_time', 'test_root_mean_squared_error', 'test_mean_absolute_error', 'test_r2_score'])
+results_df = pd.DataFrame(columns=['idx', 'n_estimators', 'max_features', 'fit_time', 'score_time', 'test_root_mean_squared_error', 'test_mean_absolute_error', 'test_r2_score'])
 
 idx = 0
-for lr, n_estimators, max_depth in tqdm(list(itertools.product(lr_space, n_estimators_space, max_depth_space))):
-    brt = GradientBoostingRegressor(
+for n_estimators, max_features in tqdm(list(itertools.product(n_estimators_space, max_features_space))):
+    rf = RandomForestRegressor(
         n_estimators=n_estimators,
-        learning_rate=lr,
-        max_depth=max_depth,
-        random_state=0,
-        loss='ls'
+        max_features=max_features
     )
 
-    scores = cross_validate(brt, X, y, scoring=scoring, cv=cv, n_jobs=-1)
+    scores = cross_validate(rf, X, y, scoring=scoring, cv=cv, n_jobs=-1)
     result_dict = {}
     result_dict['idx'] = idx
-    result_dict['lr'] = lr
     result_dict['n_estimators'] = n_estimators
-    result_dict['max_depth'] = max_depth
+    result_dict['max_features'] = max_features
     result_dict['fit_time'] = sum(scores['fit_time']) / cv_splits
     result_dict['score_time'] = sum(scores['score_time']) / cv_splits
     result_dict['test_root_mean_squared_error'] = np.sqrt(sum(scores['test_mean_squared_error']) / cv_splits)
     result_dict['test_mean_absolute_error'] = sum(scores['test_mean_absolute_error']) / cv_splits
     result_dict['test_r2_score'] = sum(scores['test_r2_score']) / cv_splits
     results_df = results_df.append(result_dict, ignore_index=True)
-    print('IDX: {:d} | lr {:.4f} | n_estimators {:.4f} | max_depth {:.4f} | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(idx, lr, n_estimators, max_depth, result_dict['test_root_mean_squared_error'], result_dict['test_mean_absolute_error'], result_dict['test_r2_score']))
+    print('IDX: {:d} | n_estimators {:.4f} | max_features {:.4f} | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(idx, n_estimators, max_features, result_dict['test_root_mean_squared_error'], result_dict['test_mean_absolute_error'], result_dict['test_r2_score']))
     idx += 1
 
-results_df.to_csv('out/brt_gridsearch.csv', index=False)
+results_df.to_csv('out/rf_gridsearch.csv', index=False)

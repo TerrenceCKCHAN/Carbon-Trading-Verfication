@@ -10,15 +10,15 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-# csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.04.csv"
-csv_file_path = r"C:\Users\kothi\Documents\individual_project\individual_project\data\S1AIW_S2AL2A_NDVI_EVI_SATVI_DEM_LUCASTIN_roi_points_0.02.csv"
+csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
-    'VH_1','VV_1','VH_2','VV_2','VH_3','VV_3','VH_4','VV_4','VH_5','VV_5',
-    'BAND_11','BAND_12','BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8','BAND_8A','NDVI','EVI','SATVI',
-    'DEM_ELEV','DEM_CS','DEM_LSF','DEM_SLOPE','DEM_TWI',
-    'OC'
+    'VH_1','VV_1',
+    'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+    'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+    'EVI', 'NDVI','SATVI',
+    "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
 ]
 
 df = data_df[features_list]
@@ -33,10 +33,10 @@ plt.show()
 
 # Calculate VIF
 
-x = df.drop('OC', 1)
+x = df.drop('SG_15_30', 1)
 # Need to add constant to match calculation in R (https://stackoverflow.com/questions/42658379/variance-inflation-factor-in-python)
 x = add_constant(x)
-y = df['OC']
+y = df['SG_15_30']
 
 thresh = 10
 final_feature_list = []
