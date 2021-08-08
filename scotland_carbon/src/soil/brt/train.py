@@ -9,24 +9,21 @@ def load_csv_to_pd(csv_file_path):
     df.drop_duplicates(subset=None, inplace=True)
     return df
 
-csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_300m_processed.csv"
+csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 data_df = load_csv_to_pd(csv_file_path)
 
 msk = np.random.rand(len(data_df)) < 0.8
 train_df = data_df[msk]
 test_df = data_df[~msk]
 
-# features_list = [
-#     'VH_1', 'VV_1', 
-#     'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_8A',
-#     'DEM_ELEV', 'DEM_TWI'
-# ]
+# features_list = ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY']
 
 # features_list = [
 #     'VH_1','VV_1',
 #     'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
 #     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-#     'EVI', 'NDVI','SATVI'
+#     'EVI', 'NDVI','SATVI',
+#     "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
 # ]
 
 features_list = [
@@ -60,4 +57,4 @@ test_mae = mean_absolute_error(y_test, brt.predict(X_test))
 test_r2 = r2_score(y_test, brt.predict(X_test))
 print('TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2))
 
-joblib.dump(brt, "../../../models/brtmodel.joblib.pkl", compress=3)
+joblib.dump(brt, "../../../models/brt_all_model.joblib.pkl", compress=3)
