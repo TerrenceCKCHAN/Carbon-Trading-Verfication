@@ -62,7 +62,7 @@ def load_csv_to_pd(csv_file_path):
 
 def train(input_csv, feature, pred, model, log):
 
-    ground_truth = 'AGB' if pred == 'agb' else 'SG_15_30'
+    ground_truth = 'AGB' if pred == 'agb' else 'OC'
 
     data_df = load_csv_to_pd(input_csv)
     msk = np.random.rand(len(data_df)) < 0.8
@@ -97,13 +97,13 @@ def train(input_csv, feature, pred, model, log):
 
 # train - (input file, features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
 print("Training model 1")
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'brt', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'rf', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'xgb', True)
+train(csv_file_path, 'SOC_FEATURES', 'soc', 'brt', True)
+train(csv_file_path, 'SOC_FEATURES', 'soc', 'rf', True)
+train(csv_file_path, 'SOC_FEATURES', 'soc', 'xgb', True)
 
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'brt', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'rf', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'xgb', False)
+train(csv_file_path, 'AGB_FEATURES', 'agb', 'brt', False)
+train(csv_file_path, 'AGB_FEATURES', 'agb', 'rf', False)
+train(csv_file_path, 'AGB_FEATURES', 'agb', 'xgb', False)
 
 train(csv_file_path, 'VIF', 'soc', 'brt', True)
 train(csv_file_path, 'VIF', 'soc', 'rf', True)
