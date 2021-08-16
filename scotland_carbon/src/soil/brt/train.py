@@ -18,20 +18,20 @@ test_df = data_df[~msk]
 
 # features_list = ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY']
 
-# features_list = [
-#     'VH_1','VV_1',
-#     'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-#     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-#     'EVI', 'NDVI','SATVI',
-#     "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
-# ]
-
 features_list = [
     'VH_1','VV_1',
     'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-    'EVI', 'NDVI','SATVI'
+    'EVI', 'NDVI','SATVI',
+    "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
 ]
+
+# features_list = [
+#     'VH_1','VV_1',
+#     'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+#     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+#     'EVI', 'NDVI','SATVI'
+# ]
 
 X_train = train_df[features_list].values.astype(np.float32)
 y_train = np.log(train_df['SG_15_30'].values)
@@ -57,4 +57,4 @@ test_mae = mean_absolute_error(y_test, brt.predict(X_test))
 test_r2 = r2_score(y_test, brt.predict(X_test))
 print('TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2))
 
-joblib.dump(brt, "../../../models/brt_all_model.joblib.pkl", compress=3)
+joblib.dump(brt, "../../../models/SG_15_30_models/brt_all_model.joblib.pkl", compress=3)

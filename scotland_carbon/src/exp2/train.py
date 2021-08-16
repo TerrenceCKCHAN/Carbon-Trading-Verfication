@@ -36,22 +36,21 @@ MODEL_DICT = {
 }
 
 FEATURES_DICT = {
-    'VIF': ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY'],
-    'SOC_FEATURES': [
-        'VH_1','VV_1',
-        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-        'EVI', 'NDVI','SATVI'
-    ],
-    'AGB_FEATURES': [
-        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY", 
-    ],
-    'ALL': [
+    'ALL+AGB': [
         'VH_1','VV_1',
         'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
         'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
         'EVI', 'NDVI','SATVI',
-        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
+        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY",
+        "AGB"
+    ],
+    'ALL+SOC': [
+        'VH_1','VV_1',
+        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+        'EVI', 'NDVI','SATVI',
+        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY",
+        "OC", "SG_15_30"
     ]
 }
 
@@ -82,13 +81,11 @@ def train(input_csv, feature, pred, model, log):
     print(result_string)
 
     feature2model = {
-        'ALL': 'all_',
-        'SOC_FEATURES': '',
-        'AGB_FEATURES': '',
-        'VIF': 'corr_',
+        'ALL+AGB': 'all+agb_',
+        'ALL+SOC': 'all+soc_',
     }
-    out_name = '../../models/joint_models/' + pred + '/' + model + '_' + feature2model[feature] + 'model.joblib.pkl'
-    out_result = '../../models/joint_models/' + pred + '/' + model + '_' + feature2model[feature] + 'result.txt'
+    out_name = '../../models/exp2_models/' + pred + '/' + model + '_' + feature2model[feature] + 'model.joblib.pkl'
+    out_result = '../../models/exp2_models/' + pred + '/' + model + '_' + feature2model[feature] + 'result.txt'
     
     joblib.dump(m, out_name, compress=3)
 
@@ -97,13 +94,13 @@ def train(input_csv, feature, pred, model, log):
 
 # train - (input file, features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
 print("Training model 1")
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'brt', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'rf', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'xgb', True)
+train(csv_file_path, 'ALL+AGB', 'soc', 'brt', True)
+train(csv_file_path, 'ALL+AGB', 'soc', 'rf', True)
+train(csv_file_path, 'ALL+AGB', 'soc', 'xgb', True)
 
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'brt', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'rf', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'xgb', False)
+train(csv_file_path, 'ALL+SOC', 'agb', 'brt', False)
+train(csv_file_path, 'ALL+SOC', 'agb', 'rf', False)
+train(csv_file_path, 'ALL+SOC', 'agb', 'xgb', False)
 
 # train(csv_file_path, 'VIF', 'soc', 'brt', True)
 # train(csv_file_path, 'VIF', 'soc', 'rf', True)

@@ -19,7 +19,7 @@ features_list = [
     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
     'EVI', 'NDVI','SATVI',
     "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY",
-    "SG_15_30"
+    "OC"
 ]
 
 # pd.options.display.float_format = '{:,.0f}'.format
@@ -37,10 +37,10 @@ plt.show()
 
 # Calculate VIF
 
-x = df.drop('SG_15_30', 1)
+x = df.drop('OC', 1)
 # Need to add constant to match calculation in R (https://stackoverflow.com/questions/42658379/variance-inflation-factor-in-python)
 x = add_constant(x)
-y = df['SG_15_30']
+y = df['OC']
 
 thresh = 10
 final_feature_list = []
