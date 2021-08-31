@@ -5,7 +5,7 @@ import matplotlib.patches as mpatches
 blue_patch = mpatches.Patch(color='Dodgerblue', label='Sentinel 1')
 org_patch = mpatches.Patch(color='orange', label='Sentinel 2')
 gray_patch = mpatches.Patch(color='gray', label='Digital Elevation')
-dorg_patch = mpatches.Patch(color='darkorange', label='LandSat 8')
+dred_patch = mpatches.Patch(color='darkred', label='LandSat 8')
 green_patch = mpatches.Patch(color='darkolivegreen', label='Woodland Category')
 
 FEATURES_DICT = {
@@ -13,6 +13,28 @@ FEATURES_DICT = {
         ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY'],
         ['Dodgerblue']*2 + ['Gray'] * 4 + ['darkolivegreen'],
         [blue_patch, gray_patch, green_patch],
+    ],
+    'VIF_SOC_PLUS': [
+        [
+        'VH_1','VV_1',
+        'BAND_2','BAND_8A',
+        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+        'EVI',
+        "L_5", "L_6","L_8","L_9", "CATEGORY"
+        ],
+        ['Dodgerblue'] * 2 + ['orange'] * 2 + ['Gray'] * 4 + ['orange'] * 1 + ['darkred']*4 + ['darkolivegreen'],
+        [blue_patch, gray_patch, org_patch, dred_patch, green_patch]
+    ],
+    'VIF_AGB_PLUS': [
+        [
+        'VH_1', 'VV_1', 
+        'BAND_4', 'BAND_8A', 
+        'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 
+        'NDVI', 
+        'L_4', 'L_5', 'L_6', 'L_10', 'CATEGORY'
+        ],
+        ['Dodgerblue'] * 2 + ['orange'] * 2 + ['Gray'] * 4 + ['orange'] * 1 + ['darkred']*4 + ['darkolivegreen'],
+        [blue_patch, gray_patch, org_patch, dred_patch, green_patch]
     ],
     'SOC_FEATURES': [
         ['VH_1','VV_1',
@@ -24,8 +46,8 @@ FEATURES_DICT = {
     ],
     'AGB_FEATURES': [
         [ "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"],
-        ['darkorange']*11 + ['darkolivegreen'],
-        [dorg_patch, green_patch],
+        ['darkred']*11 + ['darkolivegreen'],
+        [dred_patch, green_patch],
     ],
     'ALL': [
         ['VH_1','VV_1',
@@ -33,8 +55,8 @@ FEATURES_DICT = {
         'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
         'EVI', 'NDVI','SATVI',
         "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"],
-        ['Dodgerblue'] * 2 + ['orange'] * 9 + ['Gray'] * 4 + ['orange'] * 3 + ['darkorange']*11 + ['darkolivegreen'],
-        [blue_patch, org_patch, gray_patch, dorg_patch, green_patch],
+        ['Dodgerblue'] * 2 + ['orange'] * 9 + ['Gray'] * 4 + ['orange'] * 3 + ['darkred']*11 + ['darkolivegreen'],
+        [blue_patch, org_patch, gray_patch, dred_patch, green_patch],
     ]
 }
 
@@ -43,6 +65,8 @@ feature2model = {
     'SOC_FEATURES': '',
     'AGB_FEATURES': '',
     'VIF': 'corr_',
+    'VIF_SOC_PLUS': 'corr_soc_plus',
+    'VIF_AGB_PLUS': 'corr_agb_plus',
 }
 
 def generate_feature_graph(f, pred, mod):
@@ -81,26 +105,26 @@ def generate_feature_graph(f, pred, mod):
     plt.legend(handles=FEATURES_DICT[f][2])
     plt.savefig('../../report_output/exp1-joint/feature_maps/' + pred +'/' + mod + '_' + feature2model[f] + 'feature.png')
 
-generate_feature_graph('SOC_FEATURES', 'soc', 'brt')
-generate_feature_graph('SOC_FEATURES', 'soc', 'rf')
-generate_feature_graph('SOC_FEATURES', 'soc', 'xgb')
-
-generate_feature_graph('AGB_FEATURES', 'agb', 'brt')
-generate_feature_graph('AGB_FEATURES', 'agb', 'rf')
-generate_feature_graph('AGB_FEATURES', 'agb', 'xgb')
-
-generate_feature_graph('VIF', 'soc', 'brt')
-generate_feature_graph('VIF', 'soc', 'rf')
-generate_feature_graph('VIF', 'soc', 'xgb')
-
-generate_feature_graph('VIF', 'agb', 'brt')
-generate_feature_graph('VIF', 'agb', 'rf')
-generate_feature_graph('VIF', 'agb', 'xgb')
-
-generate_feature_graph('ALL', 'soc', 'brt')
-generate_feature_graph('ALL', 'soc', 'rf')
+# generate_feature_graph('VIF_SOC_PLUS', 'soc', 'brt')
+# generate_feature_graph('VIF_SOC_PLUS', 'soc', 'rf')
+generate_feature_graph('VIF_SOC_PLUS', 'soc', 'xgb')
 generate_feature_graph('ALL', 'soc', 'xgb')
 
+generate_feature_graph('VIF_AGB_PLUS', 'agb', 'brt')
 generate_feature_graph('ALL', 'agb', 'brt')
-generate_feature_graph('ALL', 'agb', 'rf')
-generate_feature_graph('ALL', 'agb', 'xgb')
+
+# generate_feature_graph('VIF', 'soc', 'brt')
+# generate_feature_graph('VIF', 'soc', 'rf')
+# generate_feature_graph('VIF', 'soc', 'xgb')
+
+# generate_feature_graph('VIF', 'agb', 'brt')
+# generate_feature_graph('VIF', 'agb', 'rf')
+# generate_feature_graph('VIF', 'agb', 'xgb')
+
+# generate_feature_graph('ALL', 'soc', 'brt')
+# generate_feature_graph('ALL', 'soc', 'rf')
+# generate_feature_graph('ALL', 'soc', 'xgb')
+
+# generate_feature_graph('ALL', 'agb', 'brt')
+# generate_feature_graph('ALL', 'agb', 'rf')
+# generate_feature_graph('ALL', 'agb', 'xgb')

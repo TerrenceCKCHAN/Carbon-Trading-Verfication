@@ -52,6 +52,20 @@ FEATURES_DICT = {
         'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
         'EVI', 'NDVI','SATVI',
         "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
+    ],
+    'VIF_SOC_PLUS': [
+        'VH_1','VV_1',
+        'BAND_2','BAND_8A',
+        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+        'EVI',
+        "L_5", "L_6","L_8","L_9", "CATEGORY"
+    ],
+    'VIF_AGB_PLUS': [
+        'VH_1', 'VV_1', 
+        'BAND_4', 'BAND_8A', 
+        'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 
+        'NDVI', 
+        'L_4', 'L_5', 'L_6', 'L_10', 'CATEGORY'
     ]
 }
 
@@ -86,6 +100,8 @@ def train(input_csv, feature, pred, model, log):
         'SOC_FEATURES': '',
         'AGB_FEATURES': '',
         'VIF': 'corr_',
+        'VIF_SOC_PLUS': 'corr_soc_plus',
+        'VIF_AGB_PLUS': 'corr_agb_plus',
     }
     out_name = '../../models/joint_models/' + pred + '/' + model + '_' + feature2model[feature] + 'model.joblib.pkl'
     out_result = '../../models/joint_models/' + pred + '/' + model + '_' + feature2model[feature] + 'result.txt'
@@ -97,13 +113,13 @@ def train(input_csv, feature, pred, model, log):
 
 # train - (input file, features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
 print("Training model 1")
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'brt', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'rf', True)
-# train(csv_file_path, 'SOC_FEATURES', 'soc', 'xgb', True)
+# train(csv_file_path, 'VIF_SOC_PLUS', 'soc', 'brt', True)
+# train(csv_file_path, 'VIF_SOC_PLUS', 'soc', 'rf', True)
+# train(csv_file_path, 'VIF_SOC_PLUS', 'soc', 'xgb', True)
 
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'brt', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'rf', False)
-# train(csv_file_path, 'AGB_FEATURES', 'agb', 'xgb', False)
+train(csv_file_path, 'VIF_AGB_PLUS', 'agb', 'brt', False)
+train(csv_file_path, 'VIF_AGB_PLUS', 'agb', 'rf', False)
+train(csv_file_path, 'VIF_AGB_PLUS', 'agb', 'xgb', False)
 
 # train(csv_file_path, 'VIF', 'soc', 'brt', True)
 # train(csv_file_path, 'VIF', 'soc', 'rf', True)

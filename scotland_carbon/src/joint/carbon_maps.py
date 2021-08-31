@@ -74,7 +74,7 @@ def plot_graph(result_data, err_data, title, map_style, out_file_name):
     ###################################################################################
     gridspec = {'width_ratios': [1, 1, 0.1]}
     fig, (ax1, ax2, ax3) = plt.subplots(ncols=3, nrows=1, figsize=(9, 4), gridspec_kw=gridspec)
-    fig.suptitle(title)
+    # fig.suptitle(title)
     
     ax1.xaxis.set_major_formatter(plt.FuncFormatter(x_format_func))
     ax2.xaxis.set_major_formatter(plt.FuncFormatter(x_format_func))
@@ -101,7 +101,7 @@ def plot_graph(result_data, err_data, title, map_style, out_file_name):
     ax1.add_artist(scalebar1)
     ax2.add_artist(scalebar2)
     ax1.set_title('Prediction Map', size=10)
-    ax2.set_title('Truth Map', size=10)
+    ax2.set_title('Error Map', size=10)
     
 
     pred_plot = ax1.imshow(result_data, cmap = map_style)
@@ -162,9 +162,13 @@ def plot_single_graph(result_data, map_style, out_file_name):
     plt.savefig(out_file_name)
 
     
-# soc_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\Train_SG_15-30_27700_clipped.tif').read(1)
 soc_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\Train_SOCS_0-30_27700_clipped.tif').read(1)
 soc_result = evaluate(model_path['soc_brt'], input_path['soc_features'], True)
+plot_graph(np.clip(soc_result, 50,120), np.abs(soc_truth - soc_result[:131, :193]), 'BRT SOC Carbon Density Map (Model D)', 'Greens', output_path['soc_brt_features'])
+
+
+# soc_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\Train_SG_15-30_27700_clipped.tif').read(1)
+# soc_result = evaluate(model_path['soc_brt'], input_path['all'], True)
 # pred, error, title, output directory
 # plot_graph(soc_result, np.abs(soc_truth - soc_result[:131, :193]), 'BRT SOC Carbon Density Map (Model D)', 'BuGn', output_path['socd_brt_all'])
 
@@ -181,11 +185,11 @@ agb_result = evaluate(model_path['agb_xgb_all'], input_path['all'], False)
 #     )
 
 
-plot_single_graph(
-    agb_result+soc_result, 
-    'YlOrRd' ,
-    '../../report_output/exp1-joint/carbon_maps/total_carbon_map_pred.png'
-    )
+# plot_single_graph(
+#     agb_result+soc_result, 
+#     'YlOrRd' ,
+#     '../../report_output/exp1-joint/carbon_maps/total_carbon_map_pred.png'
+#     )
 
 # plot_single_graph(
 #     agb_truth+soc_truth[:130,:192],

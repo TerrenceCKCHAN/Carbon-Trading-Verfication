@@ -15,12 +15,15 @@ data_df = load_csv_to_pd(csv_file_path)
 
 features_list = [
     'VH_1','VV_1',
-    'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+    'BAND_4','BAND_8A',
     'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-    'EVI', 'NDVI','SATVI',
-    "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY",
+    'NDVI',
+    "L_4", "L_5", "L_6", "L_10", "CATEGORY",
     "AGB"
 ]
+
+# BAND_12, BAND_6, BAND_7, BAND_2, Band_11, BAND_5, band 4, L2, L11,L_9, L_3, L_8, L_7, L_1,SATVI
+# Band 3,4 highly correlated
 
 # pd.options.display.float_format = '{:,.0f}'.format
 
@@ -32,8 +35,8 @@ print(cor)
 
 plt.figure(figsize=(20,20))
 sns.heatmap(cor, annot=True)
-# plt.savefig('../../../report_output/experiment1/pearson_corr_soc.png')
-plt.show()
+plt.savefig('../../report_output/experiment1/pearson_corr_agb_removal.png')
+# plt.show()
 
 # Calculate VIF
 
@@ -54,3 +57,5 @@ for i in range(1, n):
         final_feature_list.append(x.columns[i])
 
 print("Final features list:", final_feature_list)
+
+# ['VH_1', 'VV_1', 'BAND_4', 'BAND_8A', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'NDVI', 'L_4', 'L_5', 'L_6', 'L_10', 'CATEGORY']

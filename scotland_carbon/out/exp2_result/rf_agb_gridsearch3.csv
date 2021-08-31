@@ -1,0 +1,2 @@
+idx,lr,n_estimators,max_depth,fit_time,score_time,test_root_mean_squared_error,test_mean_absolute_error,test_r2_score,max_feature
+0.0,,300.0,,119.15443429946899,0.750600528717041,159.53889784082773,102.33454197970212,0.597813226674791,7.0
