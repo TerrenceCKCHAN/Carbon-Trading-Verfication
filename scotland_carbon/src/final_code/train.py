@@ -28,12 +28,22 @@ MODEL_DICT = {
 }
 
 FEATURES_DICT = {
+    'MODEL_A': [
+        'VH_1','VV_1',
+        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+        'EVI', 'NDVI','SATVI'
+    ],
+    'MODEL_B': [
+        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY", 
+    ],
+    'MODEL_C': ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY'],
     'MODEL_D': [
-    'VH_1','VV_1',
-    'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-    'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-    'EVI', 'NDVI','SATVI',
-    "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
+        'VH_1','VV_1',
+        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
+        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
+        'EVI', 'NDVI','SATVI',
+        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
     ],
     'MODEL_E': [
         'VH_1','VV_1',
@@ -41,7 +51,6 @@ FEATURES_DICT = {
         'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
         'EVI',
         "L_5", "L_6","L_8","L_9", "CATEGORY",
-        "AGB"
     ],
     'MODEL_F': [
         'VH_1', 'VV_1', 
@@ -50,7 +59,6 @@ FEATURES_DICT = {
         'NDVI', 
         'L_4', 'L_5', 'L_6', 'L_10', 
         'CATEGORY',
-        'OC', 'SG_15_30'
     ],
     'MODEL_G': [
         'VH_1','VV_1',
@@ -69,6 +77,12 @@ FEATURES_DICT = {
     ],
 }
 
+PRED_DICT = {
+    'agb': 'AGB',
+    'soc': 'OC',
+    'socd': 'SG_15_30'
+}
+
 def load_csv_to_pd(csv_file_path):
     df = pd.read_csv(csv_file_path, sep=r'\s*,\s*', engine='python')
     df.drop_duplicates(subset=None, inplace=True)
@@ -76,7 +90,7 @@ def load_csv_to_pd(csv_file_path):
 
 def train(input_csv, feature, pred, model, log):
 
-    ground_truth = 'AGB' if pred == 'agb' else 'OC'
+    ground_truth = PRED_DICT[pred]
 
     data_df = load_csv_to_pd(input_csv)
     msk = np.random.rand(len(data_df)) < 0.8
@@ -95,16 +109,8 @@ def train(input_csv, feature, pred, model, log):
     result_string = 'TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2)
     print(result_string)
 
-    feature2model = {
-        'ALL+AGB': 'all+agb_',
-        'ALL+SOC': 'all+soc_',
-        'SENT+DEM+AGB': 'sent+dem+agb_',
-        'ALL+SOC+22': 'all+soc+22_',
-        'VIF+AGB': 'vif+agb_',
-        'VIF+SOC': 'vif+soc_'
-    }
-    out_name = '../../models/exp3_models/' + pred + '/' + model + '_' + feature2model[feature] + 'model.joblib.pkl'
-    out_result = '../../models/exp3_models/' + pred + '/' + model + '_' + feature2model[feature] + 'result.txt'
+    out_name = '../../models/' + pred + '/' + model + '_' + feature + 'model.joblib.pkl'
+    out_result = '../../models/' + pred + '/' + model + '_' + feature + 'result.txt'
     
     joblib.dump(m, out_name, compress=3)
 
@@ -112,33 +118,4 @@ def train(input_csv, feature, pred, model, log):
         text_file.write(result_string)
 
 # train - (input file, features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
-print("Training model 1")
-
-train(csv_file_path, 'SENT+DEM+AGB', 'soc', 'rf', True)
-
-
-# train(csv_file_path, 'ALL+SOC+22', 'agb', 'xgb', False)
-
-# train(csv_file_path, 'VIF+AGB', 'soc', 'brt', True)
-# train(csv_file_path, 'VIF+AGB', 'soc', 'rf', True)
-# train(csv_file_path, 'VIF+AGB', 'soc', 'xgb', True)
-
-# train(csv_file_path, 'VIF+SOC', 'agb', 'brt', False)
-# train(csv_file_path, 'VIF+SOC', 'agb', 'rf', False)
-# train(csv_file_path, 'VIF+SOC', 'agb', 'xgb', False)
-
-# train(csv_file_path, 'VIF', 'soc', 'brt', True)
-# train(csv_file_path, 'VIF', 'soc', 'rf', True)
-# train(csv_file_path, 'VIF', 'soc', 'xgb', True)
-
-# train(csv_file_path, 'VIF', 'agb', 'brt', False)
-# train(csv_file_path, 'VIF', 'agb', 'rf', False)
-# train(csv_file_path, 'VIF', 'agb', 'xgb', False)
-
-# train(csv_file_path, 'ALL', 'soc', 'brt', True)
-# train(csv_file_path, 'ALL', 'soc', 'rf', True)
-# train(csv_file_path, 'ALL', 'soc', 'xgb', True)
-
-# train(csv_file_path, 'ALL', 'agb', 'brt', False)
-# train(csv_file_path, 'ALL', 'agb', 'rf', False)
-# train(csv_file_path, 'ALL', 'agb', 'xgb', False)
+train(csv_file_path, 'MODEL_A', 'soc', 'rf', True)

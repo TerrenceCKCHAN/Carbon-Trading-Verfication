@@ -10,20 +10,18 @@ from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 import matplotlib.font_manager as fm
 
 model_path = {
-    'soc_brt': "../../models/joint_models/soc/brt_model.joblib.pkl",
-    'agb_xgb_all': "../../models/joint_models/agb/xgb_all_model.joblib.pkl",
-    'socd_brt_all': "../../models/SG_15_30_models/brt_all_model.joblib.pkl",
+    'model_G': "../../models/exp2_models/soc/rf_sent+dem+agb_model.joblib.pkl",
+    'model_H': "../../models/exp2_models/agb/rf_all+soc+22_model.joblib.pkl",
 }
 
 input_path = {
-    'soc_features': fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1A_S2AL2A_INDICES_DEM_EVAL.tif',
-    'all': fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\ALL_EVAL.tif'
+    'model_G_eval': fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\MODEL_G_EVAL.tif',
+    'model_H_eval': fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\MODEL_H_EVAL.tif'
 }
 
 output_path = {
-    'soc_brt_features': '../../report_output/exp1-joint/carbon_maps/soc/soc_brt_features.png',
-    'agb_xgb_all': '../../report_output/exp1-joint/carbon_maps/agb/agb_xgb_all.png',
-    'socd_brt_all': '../../report_output/exp1-joint/carbon_maps/soc/socd_brt_all.png',
+    'model_G': '../../report_output/exp2/carbon_maps/model_G.png',
+    'model_H': '../../report_output/exp2/carbon_maps/model_H.png'
 }
 
 def evaluate(model_path, input_path, isLog):
@@ -163,17 +161,12 @@ def plot_single_graph(result_data, map_style, out_file_name):
 
     
 soc_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\Train_SOCS_0-30_27700_clipped.tif').read(1)
-soc_result = evaluate(model_path['soc_brt'], input_path['soc_features'], True)
+soc_result = evaluate(model_path['model_G'], input_path['model_G_eval'], True)
 # plot_graph(np.clip(soc_result, 50,120), np.abs(soc_truth - soc_result[:131, :193]), 'BRT SOC Carbon Density Map (Model D)', 'Greens', output_path['soc_brt_features'])
 
 
-socd_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\Train_SG_15-30_27700_clipped.tif').read(1)
-# soc_result = evaluate(model_path['soc_brt'], input_path['all'], True)
-# pred, error, title, output directory
-# plot_graph(soc_result, np.abs(soc_truth - soc_result[:131, :193]), 'BRT SOC Carbon Density Map (Model D)', 'BuGn', output_path['socd_brt_all'])
-
 agb_truth = rasterio.open(fr'C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\agb_c1_27700_300m_clipped.tif').read(1)
-agb_result = evaluate(model_path['agb_xgb_all'], input_path['all'], False)
+agb_result = evaluate(model_path['model_H'], input_path['model_H_eval'], False)
 # plot_graph(agb_result, np.abs(agb_truth - agb_result[:130, :192]), 'XGB AGB Carbon Map (Model D)', 'YlGn', output_path['agb_xgb_all'])
 
 # plot_graph(
@@ -196,23 +189,23 @@ agb_result = evaluate(model_path['agb_xgb_all'], input_path['all'], False)
 #     '../../report_output/exp1-joint/carbon_maps/soc/socd_truth.png'
 #     )
 
-plot_single_graph(
-    agb_truth,
-    'YlGn',
-    '../../report_output/exp1-joint/carbon_maps/soc/agb_truth.png'
-    )
+# plot_single_graph(
+#     agb_result+soc_result,
+#     'YlOrRd',
+#     '../../report_output/exp2/carbon_maps/total_carbon_map.png'
+#     )
 
+
+plot_single_graph(
+    agb_truth+soc_truth[:130,:192],
+    'YlOrRd' ,
+    '../../report_output/exp2/carbon_maps/total_carbon_map_truth.png'
+    )
 
 # plot_single_graph(
 #     agb_result+soc_result, 
 #     'YlOrRd' ,
 #     '../../report_output/exp1-joint/carbon_maps/total_carbon_map_pred.png'
-#     )
-
-# plot_single_graph(
-#     agb_truth+soc_truth[:130,:192],
-#     'YlOrRd' ,
-#     '../../report_output/exp1-joint/carbon_maps/total_carbon_map_truth.png'
 #     )
 
 # plot_single_graph(
