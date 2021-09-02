@@ -16,6 +16,6 @@ Inside `scotland_carbon/src` contains our implementation:
 
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
-- The final csv file location we need is `Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv`.
+- The csv file location is `Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv`.
 - The Evaluation tif files for Model G is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_G_EVAL.tif`
 - The Evaluation tif files for Model H is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_H_EVAL.tif`
