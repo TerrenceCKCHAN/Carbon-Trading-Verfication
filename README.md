@@ -1,4 +1,4 @@
-# Carbon-Trading-Verfication
+# Carbon-Trading-Verification
 This repository contains code used to the MSc Advanced Computing Thesis: Joint Study of Above Ground Biomass and Soil Organic Carbon for Total Carbon Estimation in Scotland. 
 
 ## Code Structure
