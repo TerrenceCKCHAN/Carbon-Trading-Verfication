@@ -1,9 +1,9 @@
 # Carbon-Trading-Verfication
-This repository contains code used to the MSc Advanced Computing Thesis: Joint Study of Above Ground Biomassand Soil Organic Carbon for Total Carbon Estimation in Scotland. 
+This repository contains code used to the MSc Advanced Computing Thesis: Joint Study of Above Ground Biomass and Soil Organic Carbon for Total Carbon Estimation in Scotland. 
 
 ## Code Structure
 Inside `scotland_carbon/src` contains our implementation:
-- `train.py`: Trains the model, and ouput to file location specified by the user. Parameters include `model`, `target variable`, `machine learning technique`, `isLog`, `output path`.
+- `train.py`: Trains the model, and output to file location specified by the user. Parameters include `model`, `target variable`, `machine learning technique`, `isLog`, `output path`.
 - `feature_importance.py`: Generates the feature importance graph for specified models. Takes in `model`, `model path`, `output path`.
 - `carbon_maps.py`: Provides two methods to generate carbon maps used in the report. The `plot_graph` function plots the prediction and error plots for the specified model. The `plot_single_graph` function plots for the carbon maps for total carbon estimation, total carbon ground truth and the total carbon error.
 - `grid_search.py`: Contains the code for performing grid search on our models, we can tune hyperparameters for any model and ML technique. Parameters are `model`, `target variable`, `ml technique` and `isLog` 
