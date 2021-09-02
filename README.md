@@ -14,6 +14,9 @@ Inside `scotland_carbon/src` contains our implementation:
 - `archive` contains previous work from Carla `Estimating-AGB` and Anish `Estimating-SOC`.
 - `scotland_carbon` contains our implementation
 
+## Trained Models
+The trained models and the results are available on AWS (link to be included).
+
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
 - The csv file location is `Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv`.
