@@ -5,9 +5,12 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, m
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import RandomForestRegressor
 import xgboost
+from utils import load_csv_to_pd, FEATURES_DICT
 
+# Specify input data location
 csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 
+# Dictionary storing mapping from machine learning name to machine learning model
 MODEL_DICT = {
     'brt': GradientBoostingRegressor(
         n_estimators=1000,
@@ -27,95 +30,54 @@ MODEL_DICT = {
     )
 }
 
-FEATURES_DICT = {
-    'MODEL_A': [
-        'VH_1','VV_1',
-        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-        'EVI', 'NDVI','SATVI'
-    ],
-    'MODEL_B': [
-        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY", 
-    ],
-    'MODEL_C': ['VH_1', 'VV_1', 'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 'CATEGORY'],
-    'MODEL_D': [
-        'VH_1','VV_1',
-        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-        'EVI', 'NDVI','SATVI',
-        "L_1","L_2","L_3","L_4", "L_5", "L_6","L_7","L_8","L_9","L_10","L_11", "CATEGORY"
-    ],
-    'MODEL_E': [
-        'VH_1','VV_1',
-        'BAND_2','BAND_8A',
-        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-        'EVI',
-        "L_5", "L_6","L_8","L_9", "CATEGORY",
-    ],
-    'MODEL_F': [
-        'VH_1', 'VV_1', 
-        'BAND_4', 'BAND_8A', 
-        'DEM_CS', 'DEM_LSF', 'DEM_TWI', 'DEM_ELEV', 
-        'NDVI', 
-        'L_4', 'L_5', 'L_6', 'L_10', 
-        'CATEGORY',
-    ],
-    'MODEL_G': [
-        'VH_1','VV_1',
-        'BAND_2','BAND_3','BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-        'DEM_CS','DEM_LSF','DEM_TWI','DEM_ELEV',
-        'EVI', 'NDVI','SATVI',
-        'AGB'
-    ],
-    'MODEL_H': [
-        'VH_1','VV_1',
-        'BAND_4','BAND_5','BAND_6','BAND_7','BAND_11','BAND_12','BAND_8A',
-        'DEM_CS','DEM_ELEV',
-        'EVI', 'NDVI','SATVI',
-        "L_5", "L_6","L_7","L_10","L_11", "CATEGORY",
-        "OC", "SG_15_30"
-    ],
-}
-
+# Map target variable names to column names in input csv file
 PRED_DICT = {
     'agb': 'AGB',
     'soc': 'OC',
     'socd': 'SG_15_30'
 }
 
-def load_csv_to_pd(csv_file_path):
-    df = pd.read_csv(csv_file_path, sep=r'\s*,\s*', engine='python')
-    df.drop_duplicates(subset=None, inplace=True)
-    return df
-
-def train(input_csv, feature, pred, model, log):
-
+def train(feature, pred, model, log, model_path):
+    # Get the ground truth label for our target variable
     ground_truth = PRED_DICT[pred]
-
-    data_df = load_csv_to_pd(input_csv)
-    msk = np.random.rand(len(data_df)) < 0.8
-    train_df = data_df[msk]
-    test_df = data_df[~msk]
+    # load data
+    data_df = load_csv_to_pd(csv_file_path)
+    # Create train test data set
+    mask = np.random.rand(len(data_df)) < 0.8
+    train_df = data_df[mask]
+    test_df = data_df[~mask]
+    # Get training data from feature list
     X_train = train_df[FEATURES_DICT[feature]].values.astype(np.float32)
+    # Get training ground truth data, log for SOC predictions, no log for AGB predictions
     Y_train = np.log(train_df[ground_truth].values) if log else train_df[ground_truth].values.astype(np.float32)
+    # Get test data from feature list
     X_test = test_df[FEATURES_DICT[feature]].values.astype(np.float32)
+    # Get testing ground truth data
     Y_test = np.log(test_df[ground_truth].values) if log else test_df[ground_truth].values.astype(np.float32)
 
+    # Get machine learning model and train on xtrain and ytrain data
     m = MODEL_DICT[model].fit(X_train,Y_train)
 
+    # Get Evaluation metrics - RMSE, MAE, R2
     test_rmse = np.sqrt(mean_squared_error(Y_test, m.predict(X_test)))
     test_mae = mean_absolute_error(Y_test, m.predict(X_test))
     test_r2 = r2_score(Y_test, m.predict(X_test))
-    result_string = 'TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2)
-    print(result_string)
 
-    out_name = '../../models/' + pred + '/' + model + '_' + feature + 'model.joblib.pkl'
-    out_result = '../../models/' + pred + '/' + model + '_' + feature + 'result.txt'
+    # Format evluation metrics into result string and print out
+    result = 'TEST RESULTS: | RMSE {:.4f} | MAE {:.4f} | R2 {:.4f}'.format(test_rmse, test_mae, test_r2)
+    print(result)
+
+    # Construct output model file name and output result file name
+    out_name   = model_path + '/' + pred + '_' + model + '_' + feature + '_' + '.joblib.pkl'
+    out_result = model_path + '/' + pred + '_' + model + '_' + feature + '_' + 'result.txt'
     
+    # Store model
     joblib.dump(m, out_name, compress=3)
-
+    # Store result
     with open(out_result, "w") as text_file:
-        text_file.write(result_string)
+        text_file.write(result)
 
-# train - (input file, features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
-train(csv_file_path, 'MODEL_A', 'soc', 'rf', True)
+# Train parameters:
+# (feature model, target variable (soc,agb,socd) , machine learning technique (brt, rf, xgb), boolean log or not, output path) 
+# train - (features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
+train('MODEL_A', 'soc', 'rf', True, '.')
