@@ -85,43 +85,45 @@ FEATURES_DICT = {
 
 # Generate feature graphs
 def generate_feature_graph(model_name, model_path, output_path):
-    
-    print(FEATURES_DICT[model_name][0])
-    print(FEATURES_DICT[model_name][1])
-    print(FEATURES_DICT[model_name][2])
 
-    print("Loading model", model_path, "...")
     # Load model from model path
     model = joblib.load(model_path)
 
-    # print feature importances in model
+    # Get feature importances in model
     importances = list(model.feature_importances_)
-    print("Importances:", importances)
 
     # Store feature importance names and values as a list
     feature_importances = [(FEATURES_DICT[model_name][0][i], list(importances)[i], FEATURES_DICT[model_name][1][i]) for i in range(len(FEATURES_DICT[model_name][0]))]
     # Sort features according to their importance
     feature_importances = sorted(feature_importances, key=lambda x: x[1], reverse=True)
-    print(len(feature_importances))
 
-    print("Feature       Importance")
+    # Print out the feature importances
+    print("Feature        Importance")
     for feature, importance, _ in feature_importances:
         print("{:<15} {:<15.2f}".format(feature, round(importance, 4)  * 100))
 
+    # Format feature importances to percentages
     feature_importances = [(fe, round(im, 4) * 100, _) for (fe, im, _) in feature_importances]    
 
+    # Define figure height and width
     fh = 7
     fw = 8
+
+    # Create figure
     fig, ax = plt.subplots(figsize=(fh, fw))
+    # Generate three lists corresponding to importances, feature labels and colours
     importances = [i for f, i, c in feature_importances]
     features = [f for f, i, c in feature_importances]
     colours = [c for f, i, c in feature_importances]
+    # Create feature importance horizontal bars
     ax.barh(features, importances, align='center', color=colours)
+    
+    # Set figure title and label
     ax.set_title("Relative % Importance")
     ax.set_xlabel("Relative Importance (%)")
+    # Set figure legend
     plt.legend(handles=FEATURES_DICT[model_name][2])
+    # Save figure to output path
     plt.savefig(output_path)
-
-
 
 generate_feature_graph('MODEL_A', '../../models/soc/brt_Model_A.joblib.pkl', './soc_brt_model_A_feature.png')
