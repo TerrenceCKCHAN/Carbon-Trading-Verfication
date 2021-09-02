@@ -11,7 +11,7 @@ Inside `scotland_carbon/src` contains our implementation:
 
 
 ## File Structure
-- `archive` contains previous work from Carla and Anish.
+- `archive` contains previous work from Carla `Estimating-AGB` and Anish `Estimating-SOC`.
 - `scotland_carbon` contains our implementation
 
 ## Running the code
