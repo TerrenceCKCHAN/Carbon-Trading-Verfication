@@ -20,6 +20,6 @@ The trained models and the results are available on AWS (link to be included).
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
 - The csv file location is `Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv`.
-- The Evaluation tif files for Model G is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_G_EVAL.tif`
-- The Evaluation tif files for Model H is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_H_EVAL.tif`
+- The Evaluation tif file for Model G is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_G_EVAL.tif`
+- The Evaluation tif file for Model H is `Carbon-Trading-Verification\scotland_carbon\data\MODEL_H_EVAL.tif`
 - Note that for the `isLog` parameter, we use log for SOC estimation and no log for AGB estimation, this is based on prior experimentations that taking log improves model training and performance for SOC estimation but not the case for AGB estimation. 
