@@ -19,7 +19,7 @@ The trained models and the results are available on AWS (link to be included). B
 - `VH_1` `VV_1` corresponds to the Sentinel 1 data obtained
 - The prefix `BAND_` indicate data source from Sentinel 2
 - The prefix `L_` indicate data source from LandSat 8 satellite
-- `DEM_CS` `DEM_LSF` `DEM_TWI` `DEM_ELEV` stands for digital elevation derivatives obtained from the digital elevation map, they corresponds to catchment slope, length slope factor , tropical wetness index and digital elevation repectively.
+- `DEM_CS` `DEM_LSF` `DEM_TWI` `DEM_ELEV` stands for digital elevation derivatives obtained from the digital elevation map, they corresponds to catchment slope, length slope factor , tropical wetness index and digital elevation respectively.
 - `NDVI` `EVI` `SATVI` are vegetation indices calculated from Sentinel 2
 - `CATEGORY` corresponds to data from the forest inventory data
 
