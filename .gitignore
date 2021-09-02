@@ -152,6 +152,6 @@ archive/Estimating-AGB/xgboost/*
 archive/Estimating-AGB/output/*
 
 # Combined Ignore
-scotland_carbon/data/*
+# scotland_carbon/data/*
 scotland_carbon/models/*
 scotland_carbon/Try Out.ipynb
