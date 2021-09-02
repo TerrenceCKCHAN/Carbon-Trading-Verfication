@@ -8,7 +8,7 @@ import xgboost
 from utils import load_csv_to_pd, FEATURES_DICT
 
 # Specify input data location
-csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
+csv_file_path = r"Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 
 # Dictionary storing mapping from machine learning name to machine learning model
 MODEL_DICT = {
@@ -78,6 +78,5 @@ def train(feature, pred, model, log, model_path):
         text_file.write(result)
 
 # Train parameters:
-# (feature model, target variable (soc,agb,socd) , machine learning technique (brt, rf, xgb), boolean log or not, output path) 
-# train - (features to use, predicting for agb/soc, model used (brt, rf, xgb), log output or not)
+# (feature model, target variable (soc,agb,socd) , machine learning technique (brt, rf, xgb), log output or not, output path) 
 train('MODEL_A', 'soc', 'rf', True, '.')

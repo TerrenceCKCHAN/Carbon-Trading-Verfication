@@ -26,7 +26,7 @@ rf_n_estimators_space = [x for x in range(100, 3000, 100)]
 rf_max_features = [1/2,1/3,1/6,1,2,3,4,5,6,7,8,9,10]
 
 # Location of data source
-csv_file_path = r"C:\Users\admin\OneDrive\Computing\Yr5 Advanced Computing\MAC Project\Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
+csv_file_path = r"Carbon-Trading-Verification\scotland_carbon\data\S1AIW_S2AL2A_DEM_IDX_SOCS_SG_L_INVEN_AGB_300m_processed.csv"
 
 # Methods that create the corresponding machine learning model upon providing parameters 
 def create_BRT_model(n_estimators, lr, max_depth):
