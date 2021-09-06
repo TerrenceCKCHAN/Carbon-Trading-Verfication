@@ -15,13 +15,16 @@ Inside `scotland_carbon/src` contains our implementation:
 - `scotland_carbon` contains our implementation
 
 ## Trained Models
-The trained models and the results are available on AWS (link to be included). Below is a brief description of the features used in different models
+The trained models and the results are available on AWS (https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/project_models.zip). Below is a brief description of the features used in different models
 - `VH_1` `VV_1` corresponds to the Sentinel 1 data obtained
 - The prefix `BAND_` indicate data source from Sentinel 2
 - The prefix `L_` indicate data source from LandSat 8 satellite
 - `DEM_CS` `DEM_LSF` `DEM_TWI` `DEM_ELEV` stands for digital elevation derivatives obtained from the digital elevation map, they corresponds to catchment slope, length slope factor , tropical wetness index and digital elevation respectively.
 - `NDVI` `EVI` `SATVI` are vegetation indices calculated from Sentinel 2
 - `CATEGORY` corresponds to data from the forest inventory data
+
+## Remote Sensing Data
+All remote sensing data including Sentinel 1, Sentinel 2, LandSat 8, DEM, Inventory Data is available on AWS at (https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/)
 
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
