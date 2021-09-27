@@ -31,6 +31,8 @@ All remote sensing data including Sentinel 1, Sentinel 2, LandSat 8, DEM, Invent
 - https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part3-2.zip
 - https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part4.zip
 
+## Virtual Environment Location
+https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/venv.zip
 
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
