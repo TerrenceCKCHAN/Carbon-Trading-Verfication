@@ -24,7 +24,12 @@ The trained models and the results are available on AWS (https://bci-satellite-c
 - `CATEGORY` corresponds to data from the forest inventory data
 
 ## Remote Sensing Data
-All remote sensing data including Sentinel 1, Sentinel 2, LandSat 8, DEM, Inventory Data is available on AWS at (https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/)
+All remote sensing data including Sentinel 1, Sentinel 2, LandSat 8, DEM, Inventory Data is available on AWS at:
+- https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part1.zip
+- https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part2.zip
+- https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part3-2.zip
+- https://bci-satellite-carbon.s3.eu-west-2.amazonaws.com/imperial-terrence/satellite_data_part4.zip
+
 
 ## Running the code
 Each file can be run separately by calling the corresponding functions. 
